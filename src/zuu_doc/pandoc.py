@@ -49,7 +49,8 @@ def pandoc_run(
     data : dict,
     template_path : str,
     output_path : str = "output",
-    delete_temporary : bool = True
+    delete_temporary : bool = True,
+    meta_path : str = "input.md"
 ):
     """
     Runs the Pandoc command to convert a Markdown file to a specified output format.
@@ -57,11 +58,11 @@ def pandoc_run(
     if os.sep in output_path:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-    dump_meta("input.md", data)
+    dump_meta(meta_path, data)
     out_type = resolve_template_type(template_path)
 
     cmd = PANDOC_DICT_TEMPLATE.format(
-        input_md="input.md",
+        input_md=meta_path,
         output_path=output_path,
         input_type=resolve_template_type("input.md"),
         output_type=out_type,
