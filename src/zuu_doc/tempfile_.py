@@ -1,3 +1,4 @@
+import functools
 import tempfile
 import shutil
 import os
@@ -15,6 +16,7 @@ def temp(paths=None, capture=None, chcwd : bool = True, err_copy_over : bool = T
         callable: Decorated function that handles temporary directory operations
     """
     def decorator(func):
+        @functools.wraps(func)
         def wrapper(*args, **kwargs):
             
             with tempfile.TemporaryDirectory() as temp_dir:
@@ -44,11 +46,12 @@ def temp(paths=None, capture=None, chcwd : bool = True, err_copy_over : bool = T
                     
                     return result
                 except Exception as e:
-                        os.chdir(currCwd)
-                        if err_copy_over:
-                            # move temporary folder contents to a folder called debug
-                            shutil.copytree(temp_dir, os.path.join(os.getcwd(), "debug"))
-                        raise e
+                    os.chdir(currCwd)
+                    os.makedirs("debug", exist_ok=True)
+                    if err_copy_over:
+                        # move temporary folder contents to a folder called debug
+                        shutil.copytree(temp_dir, os.path.join(os.getcwd(), "debug"))
+                    raise e
         
         return wrapper
     return decorator

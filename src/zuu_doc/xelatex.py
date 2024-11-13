@@ -29,9 +29,9 @@ def run_xelatex_in_temp(
 
     temp(
         paths = [
-            folder,
+            f"{folder}/*",
         ],
         capture = captures,
     )(
         lambda: run_xelatex(texFile, args, texInputs)
-    )
+    )()
