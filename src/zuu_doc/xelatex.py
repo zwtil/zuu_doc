@@ -5,12 +5,21 @@ from .tempfile_ import temp
 
 def run_xelatex(
     file : str,
+    args : typing.List[str] = [],
+    texInputs : str = None
 ):
-    os.system(f"xelatex -interaction=nonstopmode {file}")
+    if texInputs is not None:
+        texInputs = '-include-directory="{texInputs}"'
+    else:
+        texInputs = ""
+
+    os.system(f"xelatex -interaction=nonstopmode {file} {texInputs} {' '.join(args)}")
 
 def run_xelatex_in_temp(
     folder : str,
-    captures : typing.List[str]
+    captures : typing.List[str],
+    args : typing.List[str] = [],
+    texInputs : str = None
 ):
     
     for file in os.listdir(folder):
@@ -24,5 +33,5 @@ def run_xelatex_in_temp(
         ],
         capture = captures,
     )(
-        lambda: run_xelatex(texFile)
+        lambda: run_xelatex(texFile, args, texInputs)
     )
